@@ -1,0 +1,217 @@
+#include<stdio.h>
+#include<math.h>
+#include"buma.h"
+#include"yuanma.h"
+void bumayiwei() {
+	//A为和 E为部分积 B 为被乘数 C 为乘数 CR 为计数器 
+	// B和C的第一行作为 原码，第二行作为补码
+	int A[10] = { 0 };
+	int B[3][10] = { 0 };
+	int C[2][10] = { 0 };
+	int D[10] = { 0 };
+	int E[10] = { 0 };
+	double b = 0, c = 0;
+	int num1, CR = 0;
+	printf("请输入x=");
+	scanf_s("%lf", &b);
+	printf("请输入y=");
+	scanf_s("%lf", &c);
+	int num, sum, f1, f2, fuhao;
+	num = chulishuju(b);
+	sum = chulishuju(c);
+	f1 = panduan(b);
+	f2 = panduan(c);
+	fuhao = f1 ^ f2;
+	/*
+	统计数的长度；
+	*/
+	num1 = num;
+	for (int i = 0; i < num1; num1 = num1 / 10)
+		CR++;
+	//用数组储存原码
+	for (int i = CR - 1; i >= 0; i--) {
+		B[0][i] = num % 10;
+		num = num / 10;
+	}
+	for (int i = CR - 1; i >= 0; i--) {
+		C[0][i] = sum % 10;
+		sum = sum / 10;
+	}
+	//原码变成反码
+	for (int i = 0; i < CR; i++)
+		B[1][i] = B[0][i] == 0 ? 1 : 0;
+	for (int i = 0; i < CR; i++)
+		C[1][i] = C[0][i] == 0 ? 1 : 0;
+	//输出补码
+	for (int i = CR - 1; i >= 0; i--)
+	{
+		yuanmajinwei a = add(B[1][i], 1);
+		B[1][i] = a.he;
+		if (a.jinwei == 0)
+			break;
+	}
+	for (int i = CR - 1; i >= 0; i--)
+	{
+		yuanmajinwei a = add(C[1][i], 1);
+		C[1][i] = a.he;
+		if (a.jinwei == 0)
+			break;
+	}
+	if (f1 == 1) {
+		B[1][8] = 1;
+		B[1][9] = 1;
+		for (int i = 0; i < CR; i++)
+			B[2][i] = B[0][i];
+		B[2][8] = 0;
+		B[2][9] = 0;
+	}
+	if (f1 == 0)
+	{
+		B[1][8] = 1;
+		B[1][9] = 1;
+		for (int i = 0; i < CR; i++)
+			B[2][i] = B[0][i];
+		B[2][8] = 0;
+		B[2][9] = 0;
+	}
+	if (f2 == 1) {
+	}
+	if (f2 == 0) {
+		for (int i = 0; i < CR; i++)
+			C[1][i] = C[0][i];
+	}
+	int e = CR, xp = 1;
+	for (int i = e; i >= 0; i--) {
+		if (C[1][i] == 1 && C[1][i + 1] == 0)
+		{
+			if (i == e)
+			{
+				int f = CR - 1, c = 0;
+				for (int j = f; j >= 0; j--)
+				{
+					sumzhi a = zoadd(0, B[2][j]);
+					A[j] = a.he;
+					c = a.jinwei;
+					//用来存后面的末尾数字求和后移走的位数。
+					if (j == f)
+						D[i] = A[j];
+				}
+				//开始右移一位操作
+				E[0] = 0;
+				for (int j = 1; j <= f; j++)
+					E[j] = A[j - 1];
+				xp++;
+			}
+			else
+			{
+				int f = CR - 1, c = 0;
+				for (int j = f; j >= 0; j--)
+				{
+					sumzhi a = zoadd(E[j] + c, B[2][j]);
+					A[j] = a.he;
+					c = a.jinwei;
+					if (j == f)
+						D[i] = A[j];
+				}
+				//开始右移一位操作
+				E[0] = 0;
+				for (int j = 1; j <= f; j++)
+					E[j] = A[j - 1];
+				xp++;
+			}
+		}
+		if (C[1][i] == 0 && C[1][i + 1] == 1)
+		{
+			int f = CR - 1, c = 0;
+			for (int j = f; j >= 0; j--)
+			{
+				sumzhi a = zoadd(E[j] + c, B[1][j]);
+				A[j] = a.he;
+				c = a.jinwei;
+				if (j == f)
+					D[i] = A[j];
+			}
+			//开始右移一位操作
+			E[0] = 1;
+			for (int j = 1; j <= f; j++)
+				E[j] = A[j - 1];
+			xp++;
+		}
+		if (C[1][i] == 0 && C[1][i + 1] == 0)
+		{
+			int f = CR - 1, c = 0;
+			for (int j = f; j >= 0; j--)
+			{
+				sumzhi a = zoadd(E[j] + c, 0);
+				A[j] = a.he;
+				c = a.jinwei;
+				if (j == f)
+					D[i] = A[j];
+			}
+			//开始右移一位操作
+			E[0] = 0;
+			for (int j = 1; j <= f; j++)
+				E[j] = A[j - 1];
+			xp++;
+		}
+		if (C[1][i] == 1 && C[1][i + 1] == 1)
+		{
+			int f = CR - 1, c = 0;
+			for (int j = f; j >= 0; j--)
+			{
+				sumzhi a = zoadd(E[j] + c, 0);
+				A[j] = a.he;
+				c = a.jinwei;
+				if (j == f)
+					D[i] = A[j];
+			}
+			//开始右移一位操作
+			E[0] = 0;
+			for (int j = 1; j <= f; j++)
+				E[j] = A[j - 1];
+			xp++;
+		}
+		if (C[1][i] == 0 && i == 0) {
+			int f = CR - 1, c = 0;
+			for (int j = f; j >= 0; j--)
+			{
+				sumzhi a = zoadd(E[j] + c, B[2][j]);
+				A[j] = a.he;
+				c = a.jinwei;
+				xp++;
+			}
+			if (C[1][i] == 1 && i == 0) {
+				int f = CR - 1, c = 0;
+				for (int j = f; j >= 0; j--)
+				{
+					sumzhi a = zoadd(E[j] + c, 0);
+					A[j] = a.he;
+					c = a.jinwei;
+				}
+				xp++;
+			}
+		}
+	}
+	printf("[x*y]补=%d.", fuhao);
+	for (int i = 0; i <= CR - 1; i++)
+		printf("%d", A[i]);
+	for (int i = 0; i <= CR - 1; i++)
+		printf("%d", D[i]);
+	printf("\n");
+	if (fuhao == 1) {
+		printf("所以 x * y = -0.");
+		for (int i = 0; i <= CR - 1; i++)
+			printf("%d", A[i]);
+		for (int i = 0; i <= CR - 1; i++)
+			printf("%d", D[i]);
+		printf("\n");
+	}
+	if (fuhao == 0) {
+		printf("所以x * y = 0.");
+		for (int i = 0; i <= CR - 1; i++)
+			printf("%d", A[i]);
+		for (int i = 0; i <= CR - 1; i++)
+			printf("%d", D[i]);
+		printf("\n");
+	}
+}

@@ -1,0 +1,9 @@
+#pragma once
+typedef struct yuanmajinwei {
+	int jinwei;
+	int  he;
+}yuanmajinwei;
+yuanmajinwei add(int x, int y);
+void bumayiwei();
+int chulishuju(double b);
+int panduan(double a);

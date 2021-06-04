@@ -1,0 +1,8 @@
+#pragma once
+typedef struct sumzhi {
+	int jinwei;
+	int  he;
+}sumzhi;
+sumzhi zoadd(int x, int y);
+void yuanmayiwei();
+void denglu();

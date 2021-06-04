@@ -1,0 +1,46 @@
+#include<stdio.h>
+#include<math.h>
+#include"yuanma.h"
+#include"buma.h"
+
+yuanmajinwei add(int x, int y) {
+	if (x + y == 2)
+	{
+		yuanmajinwei a = { 1,0 };
+		return a;
+	}
+	else if (x + y == 1)
+	{
+		yuanmajinwei a = { 0,1 };
+		return a;
+	}
+	else
+	{
+		yuanmajinwei a = { 0,0 };
+		return a;
+	}
+}
+int chulishuju(double b) {
+	double c;
+	c = fabs(b);
+	double d;
+	double a_1;
+	d = modf(c, &a_1);//小数
+	int qwe;
+	qwe = d * 1000000000.0;
+	while (1)
+	{
+		int yu;
+		yu = qwe % 10;
+		if (yu == 1)
+			break;
+		qwe = qwe / 10;
+	}
+	return qwe;
+}
+int panduan(double a) {
+	if (a > 0.0)
+		return 0;
+	else
+		return 1;
+}

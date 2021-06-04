@@ -1,0 +1,24 @@
+#include <stdio.h>
+#include"yuanma.h"
+sumzhi zoadd(int x, int y) {
+	if (x + y == 3)
+	{
+		sumzhi a = { 1,1 };
+		return a;
+	}
+	if (x + y == 2)
+	{
+		sumzhi a = { 1,0 };
+		return a;
+	}
+	else if (x + y == 1)
+	{
+		sumzhi a = { 0,1 };
+		return a;
+	}
+	else
+	{
+		sumzhi a = { 0,0 };
+		return a;
+	}
+}

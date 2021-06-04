@@ -1,0 +1,160 @@
+#include <stdio.h>
+#include "yuanma.h"
+#include<malloc.h>
+#include"buma.h"
+void yuanmayiwei() {
+	/*
+	A数组来储存和，B1数组来储存移位操作,B 为被乘数 C 为乘数
+	*/
+	int* A = NULL;
+	int* B = NULL, CR = 0;//B 为被乘数 C 为乘数 CR 为计数器
+	int* B1 = NULL;
+	int* C = NULL;
+	int* D = NULL;
+	long int num1 = 0, num = 0;
+	long int sum = 0;
+	puts("请输入乘数:");
+	scanf_s("%u", &num);
+	puts("请输入乘数:");
+	scanf_s("%d", &sum);
+	/*
+	统计数的长度；
+	*/
+	num1 = num;
+	for (int i = 0; i < num1; num1 = num1 / 10)
+		CR++;
+	int f1, f2, fuhao;
+	puts("请输入被乘数的符号位：");
+	scanf_s("%d", &f1);
+	puts("请输入乘数的符号位：");
+	scanf_s("%d", &f2);
+	fuhao = f1 ^ f2;
+	A = (int*)malloc(sizeof(int) * CR);
+	B = (int*)malloc(sizeof(int) * CR);
+	C = (int*)malloc(sizeof(int) * CR);
+	D = (int*)malloc(sizeof(int) * CR);
+	B1 = (int*)malloc(sizeof(int) * CR);
+	for (int i = 0; i < CR; i++)
+		A[i] = 0;
+	for (int i = CR - 1; i >= 0; i--) {
+		B[i] = num % 10;
+		num = num / 10;
+	}
+	for (int i = CR - 1; i >= 0; i--) {
+		C[i] = sum % 10;
+		sum = sum / 10;
+	}
+	int e = CR - 1;
+	//A数组来储存和，B1数组来储存移位操作,b 为开始的0000 c存进位的值
+	int authorxp = 1;
+	for (int i = e; i >= 0; i--)
+	{
+		if (C[i] == 1)
+		{
+			if (i == e) {
+				int f = CR - 1, b = 0, c = 0;
+				for (int j = f; j >= 0; j--)
+				{
+					sumzhi a = zoadd(0, B[j]);
+					A[j] = a.he;
+					c = a.jinwei;
+					if (j == f)
+						D[i] = A[j];
+				}
+				B1[0] = 0;
+				for (int j = 1; j <= f; j++)
+					B1[j] = A[j - 1];
+			}
+			else
+			{
+				int f = CR - 1, c = 0;
+				for (int j = f; j >= 0; j--)
+				{
+					sumzhi a = zoadd((B1[j] + c), B[j]);
+					A[j] = a.he;
+					c = a.jinwei;
+					if (j == f)
+						D[i] = A[j];
+				}
+				if (c == 1)
+					B1[0] = 1;
+				else
+					B1[0] = 0;
+				for (int j = 1; j <= f; j++)
+					B1[j] = A[j - 1];
+			}
+		}
+		else if (C[i] == 0)
+		{
+			int f = CR - 1, c = 0;
+			for (int j = f; j >= 0; j--)
+			{
+				sumzhi a = zoadd((B1[j] + c), 0);
+				A[j] = a.he;
+				c = a.jinwei;
+				if (j == f)
+					D[i] = A[j];
+			}
+			if (c == 1)
+				B1[0] = 1;
+			else
+				B1[0] = 0;
+			for (int j = 1; j <= f; j++)
+				B1[j] = A[j - 1];
+		}
+	}
+	printf("\n");
+	printf("\n");
+	printf("结果为：%d.", fuhao);
+	for (int i = 0; i <= e; i++)
+		printf("%d", B1[i]);
+	for (int i = 0; i <= e; i++)
+		printf("%d", D[i]);
+	printf("\n");
+	if (fuhao == 1) {
+		printf("即 x * y = -0.");
+		for (int i = 0; i <= e; i++)
+			printf("%d", B1[i]);
+		for (int i = 0; i <= e; i++)
+			printf("%d", D[i]);
+		printf("\n");
+	}
+	if (fuhao == 0) {
+		printf("即 x * y = 0.");
+		for (int i = 0; i <= e; i++)
+			printf("%d", B1[i]);
+		for (int i = 0; i <= e; i++)
+			printf("%d", D[i]);
+		printf("\n");
+	}
+	free(A);
+	free(B);
+	free(B1);
+	free(C);
+	free(D);
+}
+void denglu() {
+
+	while (1)
+	{
+		int num = 0;
+		printf("\n");
+		printf("请问你要原码相乘？还是补码想乘？\n");
+		printf("按1原码相乘，按2补码相乘，0退出\n");
+		scanf_s("%d", &num);
+		if (num == 0)
+			break;
+		switch (num)
+		{
+		case 1:
+			yuanmayiwei();
+			break;
+		case 2:
+			bumayiwei();
+			break;
+		default:
+			puts("输出错误！");
+		}
+
+	}
+}
